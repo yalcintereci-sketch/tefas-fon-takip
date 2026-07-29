@@ -1,6 +1,23 @@
-print("TEFAS Fon Takip Sistemi Başlatıldı")
+from tefas import TefasClient
+from config import FUNDS
 
-funds = ["PHE", "PBR", "TLY", "TMV"]
 
-for fund in funds:
-    print(f"{fund} takip ediliyor...")
+def main():
+    client = TefasClient()
+
+    print("=" * 50)
+    print("TEFAS Fon Takip Sistemi")
+    print("=" * 50)
+
+    result = client.check_connection()
+
+    if result["success"]:
+        print("✅ TEFAS bağlantısı başarılı.")
+        print(f"Takip edilen fonlar: {', '.join(FUNDS)}")
+    else:
+        print("❌ TEFAS bağlantısı başarısız.")
+        print(result)
+
+
+if __name__ == "__main__":
+    main()
