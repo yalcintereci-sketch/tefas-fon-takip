@@ -3,7 +3,6 @@ FUNDS = [
     "PHE",
     "PBR",
     "TLY",
-    "TMV"
 ]
 
 # Çalışma ayarları
