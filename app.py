@@ -1,22 +1,40 @@
 from tefas import TefasClient
-from config import FUNDS
+from storage import Storage
+from analyzer import Analyzer
+from report import Report
+from logger import Logger
 
 
 def main():
+
+    logger = Logger()
+
+    logger.info("TEFAS veri çekme başladı.")
+
     client = TefasClient()
 
-    print("=" * 50)
-    print("TEFAS Fon Takip Sistemi")
-    print("=" * 50)
+    data = client.get_funds()
 
-    result = client.check_connection()
+    logger.info(f"{len(data)} fon bulundu.")
 
-    if result["success"]:
-        print("✅ TEFAS bağlantısı başarılı.")
-        print(f"Takip edilen fonlar: {', '.join(FUNDS)}")
-    else:
-        print("❌ TEFAS bağlantısı başarısız.")
-        print(result)
+    storage = Storage()
+    storage.save(data)
+
+    history = storage.history()
+
+    analyzer = Analyzer()
+
+    analysis = analyzer.analyze(history)
+
+    report = Report()
+
+    report_text = report.create(analysis)
+
+    report_file = report.save(report_text)
+
+    logger.info(f"Rapor oluşturuldu: {report_file}")
+
+    print(report_text)
 
 
 if __name__ == "__main__":
