@@ -46,8 +46,6 @@ class TefasClient:
                     }
                 )
 
-            except Exception as e:
-
-                print(f"{code} okunamadı -> {e}")
-
-        return funds
+  except Exception as e:
+    import traceback
+    traceback.print_exc()
