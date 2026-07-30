@@ -1,22 +1,53 @@
-import requests
+from datetime import datetime
+
+from tefas import Crawler
+
+from config import FUNDS
 
 
 class TefasClient:
 
     def __init__(self):
-        self.session = requests.Session()
-        self.base_url = "https://www.tefas.gov.tr"
+        self.crawler = Crawler()
 
-    def check_connection(self):
-        r = self.session.get(self.base_url, timeout=20)
+    def get_funds(self):
 
-        return {
-            "status": r.status_code,
-            "success": r.ok
-        }
+        today = datetime.today().strftime("%Y-%m-%d")
 
+        funds = []
 
-if __name__ == "__main__":
-    client = TefasClient()
+        for code in FUNDS:
 
-    print(client.check_connection())
+            try:
+
+                df = self.crawler.fetch(
+                    start=today,
+                    end=today,
+                    name=code,
+                    columns=[
+                        "code",
+                        "date",
+                        "price"
+                    ]
+                )
+
+                if len(df) == 0:
+                    continue
+
+                row = df.iloc[-1]
+
+                funds.append(
+                    {
+                        "fund": row["code"],
+                        "price": row["price"],
+                        "fund_size": None,
+                        "investor_count": None,
+                        "daily_return": None
+                    }
+                )
+
+            except Exception as e:
+
+                print(f"{code} okunamadı -> {e}")
+
+        return funds
