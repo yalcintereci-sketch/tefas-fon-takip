@@ -1,4 +1,4 @@
-from tefas import TefasClient
+from tefas_client import TefasClient
 from storage import Storage
 from analyzer import Analyzer
 from report import Report
